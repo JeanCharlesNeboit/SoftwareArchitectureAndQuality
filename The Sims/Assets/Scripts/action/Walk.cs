@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Walk : IMotion {
+public class Walk : IAction {
 
     public Walk() {
         
     }
 
-    public override void Move(GameObject gameObject) {
+    public void doAction(GameObject gameObject) {
         
     }
 }

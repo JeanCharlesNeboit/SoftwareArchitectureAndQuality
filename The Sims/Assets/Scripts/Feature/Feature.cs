@@ -5,5 +5,5 @@ using UnityEngine;
 public abstract class Feature {
     public float SocialTrigger { get; set; }
 
-    public abstract bool NeedSpeaking();
+    public abstract bool NeedSpeaking(float social);
 }
