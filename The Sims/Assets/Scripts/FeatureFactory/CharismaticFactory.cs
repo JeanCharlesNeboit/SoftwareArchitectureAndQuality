@@ -6,8 +6,10 @@ public class CharismaticFactory : FeatureFactory {
     private static CharismaticFactory instance = null;
 
     private CharismaticFactory() {
-        min = 80.0f;
-        max = 90.0f;
+        minSocialTrigger = 80.0f;
+        maxSocialTrigger = 90.0f;
+        minSocialStep = 0.05f;
+        maxSocialStep = 0.1f;
     }
 
     public static CharismaticFactory GetInstance() {
@@ -18,6 +20,6 @@ public class CharismaticFactory : FeatureFactory {
     }
 
     public Charismatic GetCharismaticFeature() {
-        return new Charismatic(setSocialTrigger());
+        return new Charismatic(getSocialTrigger(), getSocialStep());
     }
 }

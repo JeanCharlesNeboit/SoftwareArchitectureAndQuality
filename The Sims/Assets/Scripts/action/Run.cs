@@ -8,7 +8,7 @@ public class Run : IAction {
         
     }
 
-    public void doAction(GameObject gameObject)
+    public void doAction()
     {
 
     }

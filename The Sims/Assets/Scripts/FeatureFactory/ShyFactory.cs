@@ -6,8 +6,10 @@ public class ShyFactory : FeatureFactory {
     private static ShyFactory instance = null;
 
     private ShyFactory() {
-        min = 60.0f;
-        max = 70.0f;
+        minSocialTrigger = 60.0f;
+        maxSocialTrigger = 70.0f;
+        minSocialStep = 0.2f;
+        maxSocialStep = 0.3f;
     }
 
     public static ShyFactory GetInstance() {
@@ -18,6 +20,6 @@ public class ShyFactory : FeatureFactory {
     }
 
     public Shy GetShyFeature() {
-        return new Shy(setSocialTrigger());
+        return new Shy(getSocialTrigger(), getSocialStep());
     }
 }

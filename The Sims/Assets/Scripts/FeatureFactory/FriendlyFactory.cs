@@ -6,8 +6,10 @@ public class FriendlyFactory : FeatureFactory {
     private static FriendlyFactory instance = null;
 
     private FriendlyFactory() {
-        min = 70.0f;
-        max = 80.0f;
+        minSocialTrigger = 70.0f;
+        maxSocialTrigger = 80.0f;
+        minSocialStep = 0.1f;
+        maxSocialStep = 0.2f;
     }
 
     public static FriendlyFactory GetInstance() {
@@ -18,6 +20,6 @@ public class FriendlyFactory : FeatureFactory {
     }
 
     public Friendly GetFriendlyFeature() {
-        return new Friendly(setSocialTrigger());
+        return new Friendly(getSocialTrigger(), getSocialStep());
     }
 }

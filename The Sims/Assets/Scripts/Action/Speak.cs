@@ -7,7 +7,7 @@ public class Speak : IAction
         
     }
 
-    public void doAction(GameObject gameObject)
+    public void doAction()
     {
 
     }
