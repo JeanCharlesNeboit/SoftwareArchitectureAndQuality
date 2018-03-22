@@ -1153,6 +1153,8 @@ GameObject:
   - component: {fileID: 4613279178732522}
   - component: {fileID: 95041523139912196}
   - component: {fileID: 114686089303170060}
+  - component: {fileID: 65173119749792184}
+  - component: {fileID: 54676392271312422}
   m_Layer: 0
   m_Name: Human
   m_TagString: Untagged
@@ -2668,6 +2670,33 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1005315400033038}
   m_Mesh: {fileID: 4300000, guid: 2ab0893f5bba9b243b65e309e78089d0, type: 3}
+--- !u!54 &54676392271312422
+Rigidbody:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1894231773929466}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &65173119749792184
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1894231773929466}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.4766049, y: 1.7555574, z: 0.476206}
+  m_Center: {x: -0.0010151118, y: 0.8699346, z: 0.009195179}
 --- !u!95 &95041523139912196
 Animator:
   serializedVersion: 3

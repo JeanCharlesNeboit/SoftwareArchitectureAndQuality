@@ -8,8 +8,8 @@ public class CharismaticFactory : FeatureFactory {
     private CharismaticFactory() {
         minSocialTrigger = 80.0f;
         maxSocialTrigger = 90.0f;
-        minSocialStep = 0.05f;
-        maxSocialStep = 0.1f;
+        minSocialStep = 0.3f;
+        maxSocialStep = 0.2f;
     }
 
     public static CharismaticFactory GetInstance() {

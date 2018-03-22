@@ -12,4 +12,9 @@ public class Run : IAction {
     {
 
     }
+
+    public void stopAction()
+    {
+
+    }
 }

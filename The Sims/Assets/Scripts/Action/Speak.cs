@@ -11,4 +11,9 @@ public class Speak : IAction
     {
 
     }
+
+    public void stopAction()
+    {
+
+    }
 }

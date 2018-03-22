@@ -8,8 +8,8 @@ public class ShyFactory : FeatureFactory {
     private ShyFactory() {
         minSocialTrigger = 60.0f;
         maxSocialTrigger = 70.0f;
-        minSocialStep = 0.2f;
-        maxSocialStep = 0.3f;
+        minSocialStep = 0.05f;
+        maxSocialStep = 0.1f;
     }
 
     public static ShyFactory GetInstance() {

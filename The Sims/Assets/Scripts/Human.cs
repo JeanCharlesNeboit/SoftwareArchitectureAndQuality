@@ -27,8 +27,12 @@ public class Human : MonoBehaviour {
 
     private void UpdateSocial()
     {
-        Social -= feature.SocialStep;
-        infoTextMesh.text = "My Social: " + Social.ToString("F1");
+        if (Social > feature.SocialStep)
+        {
+            Social -= feature.SocialStep;
+        }
+
+        infoTextMesh.text = "Social: " + Social.ToString("F1");
 
         if (Social <= feature.SocialTrigger)
         {
@@ -78,11 +82,26 @@ public class Human : MonoBehaviour {
 
         if (Time.time > nextUpdate1)
         {
-            nextUpdate1 = Mathf.FloorToInt(Time.time) + 4;
+            nextUpdate1 = Mathf.FloorToInt(Time.time) + 10;
+
+            int nextAction = Random.Range(0, 5);
 
             IAction walk;
             actions.TryGetValue("Walk", out walk);
-            walk.doAction();
+
+            if (nextAction < 3)
+            {
+                walk.doAction();
+            }
+            else
+            {
+                walk.stopAction();
+            }
         }
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+
     }
 }

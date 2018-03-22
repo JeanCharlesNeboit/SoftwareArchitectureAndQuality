@@ -14,9 +14,6 @@ public class LocomotionSMB : StateMachineBehaviour {
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        /*float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");*/
-
         Vector2 input = new Vector2(horizontal, vertical).normalized;
 
         animator.SetFloat(m_HashHorizontalPara, input.x, m_Damping, Time.deltaTime);
