@@ -4,7 +4,20 @@ using UnityEngine;
 
 public class Human : MonoBehaviour {
 
-    public float Social { get; set; }
+    private float _social;
+    public float Social
+    {
+        get
+        {
+            return _social;
+        }
+        set
+        {
+            _social = value;
+            UpdateInfoTextMesh();
+        }
+    }
+
     public TextMesh infoTextMesh;
     public TextMesh typeTextMesh;
 
@@ -17,12 +30,33 @@ public class Human : MonoBehaviour {
     private int nextUpdate1 = 0;
 
     public Human() {
-        Social = 100;
+        _social = 100;
     }
 
     public LocomotionSMB GetLocomotion()
     {
         return locomotionSMB;
+    }
+
+    private void SetAction(string name, bool activate)
+    {
+        IAction action;
+        actions.TryGetValue(name, out action);
+        if (activate == true)
+        {
+            action.doAction();
+        }
+        else
+        {
+            action.stopAction();
+        }
+    }
+
+    private bool IsDoing(string name)
+    {
+        IAction action;
+        actions.TryGetValue(name, out action);
+        return action.isDoing;
     }
 
     private void UpdateSocial()
@@ -31,7 +65,10 @@ public class Human : MonoBehaviour {
         {
             Social -= feature.SocialStep;
         }
+    }
 
+    private void UpdateInfoTextMesh()
+    {
         infoTextMesh.text = "Social: " + Social.ToString("F1");
 
         if (Social <= feature.SocialTrigger)
@@ -69,6 +106,7 @@ public class Human : MonoBehaviour {
         locomotionSMB = animator.GetBehaviour<LocomotionSMB>();
         actions.Add("Walk", new Walk(locomotionSMB));
         typeTextMesh.text = feature.Type;
+        actions.Add("Speak", new Speak());
 	}
 	
 	// Update is called once per frame
@@ -86,22 +124,30 @@ public class Human : MonoBehaviour {
 
             int nextAction = Random.Range(0, 5);
 
-            IAction walk;
-            actions.TryGetValue("Walk", out walk);
-
             if (nextAction < 3)
             {
-                walk.doAction();
+                if (IsDoing("Speak") == false)
+                {
+                    SetAction("Walk", true);
+                }
             }
             else
             {
-                walk.stopAction();
+                SetAction("Walk", false);
             }
         }
     }
 
     void OnTriggerEnter(Collider other)
     {
-
+        Debug.Log(other);
+        if (other.tag == "Player")
+        {
+            if (feature.NeedSpeaking(Social))
+            {
+                SetAction("Walk", false);
+                SetAction("Speak", true);
+            }
+        }
     }
 }

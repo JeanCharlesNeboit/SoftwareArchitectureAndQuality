@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class Main : MonoBehaviour
 {
     public GameObject Human;
+    public Terrain Terrain;
+
     private Vector3 offset = new Vector3(0, 8, 10);
     private int currentHuman = 0;
     private List<GameObject> Humans = new List<GameObject>();
@@ -52,6 +54,15 @@ public class Main : MonoBehaviour
     // Add
     public void AddHuman()
     {
-        Humans.Add(Instantiate(Human));
+        float minX = Terrain.transform.position.x;
+        float maxX = minX + Terrain.terrainData.size.x;
+        float x = Random.Range(minX, minX + maxX);
+
+        float minZ = Terrain.transform.position.z;
+        float maxZ = minZ + Terrain.terrainData.size.z;
+        float z = Random.Range(minZ, minZ + maxZ);
+
+        Vector3 position = new Vector3(x,0,z);
+        Humans.Add(Instantiate(Human, position, Quaternion.identity));
     }
 }
