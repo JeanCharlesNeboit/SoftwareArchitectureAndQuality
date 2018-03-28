@@ -1,58 +1,50 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
+using UnityEngine.Experimental;
 using UnityEngine.UI;
 
-public class Main : MonoBehaviour
+[RequireComponent(typeof(CameraMove))]
+public class Main : MonoBehaviour, Observable
 {
     public GameObject Human;
     public Terrain Terrain;
+    public int CurrentFollowHuman { get; private set; }
 
-    private Vector3 offset = new Vector3(0, 8, 10);
-    private int currentHuman = 0;
-    private List<GameObject> Humans = new List<GameObject>();
+    public Button PreviousButton;
+    public Button NextButton;
+
+    private CameraMove cameraMove;
+    private List<GameObject> humans = new List<GameObject>();
+    private List<Observer> observers = new List<Observer>();
 
 	// Use this for initialization
-	void Start () {
-
+	void Start ()
+    {
+        CurrentFollowHuman = 0;
+        CameraMove cameraMove = (CameraMove)GetComponent("CameraMove");
+        attach(cameraMove);
+        UpdateUI();
 	}
 	
 	// Update is called once per frame
-	void Update () {
-        MoveCamera();
+	void Update ()
+    {
+        
     }
 
-    // Follow
+    // Buttons
     public void Previous()
     {
-        if (currentHuman > 0)
-        {
-            currentHuman--;
-        }
+        CurrentFollowHuman = (CurrentFollowHuman > 0) ? CurrentFollowHuman-- : humans.Count - 1;
     }
 
     public void Next()
     {
-        if (currentHuman < Humans.Count-1)
-        {
-            currentHuman++;
-        }
+        CurrentFollowHuman = (CurrentFollowHuman < humans.Count - 1) ? CurrentFollowHuman++ : 0;
     }
 
-    private void MoveCamera()
-    {
-        /*camera.transform.Translate(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * 10);
-        camera.transform.Rotate(new Vector3(Input.GetAxis("VerticalRight"), Input.GetAxis("HorizontalRight"), Input.GetAxis("Lean")) * 1);*/
-
-        if (Humans.Count > 0)
-        {
-            transform.position = Humans[currentHuman].transform.position + offset;
-        }
-    }
-
-    // Add
-    public void AddHuman()
+    public void Add()
     {
         float minX = Terrain.transform.position.x;
         float maxX = minX + Terrain.terrainData.size.x;
@@ -63,6 +55,38 @@ public class Main : MonoBehaviour
         float z = Random.Range(minZ, minZ + maxZ);
 
         Vector3 position = new Vector3(x,0,z);
-        Humans.Add(Instantiate(Human, position, Quaternion.identity));
+        humans.Add(Instantiate(Human, position, Quaternion.identity));
+
+        UpdateUI();
+    }
+
+    public void Remove()
+    {
+
+    }
+
+    private void UpdateUI()
+    {
+        PreviousButton.enabled = (humans.Count > 2);
+        NextButton.enabled = (humans.Count > 2);
+    }
+
+    // Subject interface
+    public void attach(Observer observer)
+    {
+        observers.Add(observer);
+    }
+
+    public void dettach(Observer observer)
+    {
+        observers.Remove(observer);
+    }
+
+    public void notify()
+    {
+        foreach(Observer observer in observers)
+        {
+            observer.update(this);
+        }
     }
 }
