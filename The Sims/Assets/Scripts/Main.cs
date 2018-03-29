@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public class Main : MonoBehaviour, Observable
 {
     public GameObject Human;
-    public Terrain Terrain;
     public int CurrentFollowHuman { get; private set; }
 
     public Button PreviousButton;
@@ -33,7 +32,27 @@ public class Main : MonoBehaviour, Observable
         
     }
 
-    // Buttons
+    /*
+     * Terrain
+     */
+    public static Vector3 GetRandomPositionInMainScene()
+    {
+        Terrain terrain = GameObject.Find("Terrain").GetComponent<Terrain>();
+        float minX = terrain.transform.position.x;
+        float maxX = minX + terrain.terrainData.size.x;
+        float x = Random.Range(minX, minX + maxX);
+
+        float minZ = terrain.transform.position.z;
+        float maxZ = minZ + terrain.terrainData.size.z;
+        float z = Random.Range(minZ, minZ + maxZ);
+
+        Vector3 position = new Vector3(x, 0, z);
+        return position;
+    }
+
+    /* 
+     * User Interface
+     */
     public void Previous()
     {
         CurrentFollowHuman = (CurrentFollowHuman > 0) ? CurrentFollowHuman-- : humans.Count - 1;
@@ -46,15 +65,7 @@ public class Main : MonoBehaviour, Observable
 
     public void Add()
     {
-        float minX = Terrain.transform.position.x;
-        float maxX = minX + Terrain.terrainData.size.x;
-        float x = Random.Range(minX, minX + maxX);
-
-        float minZ = Terrain.transform.position.z;
-        float maxZ = minZ + Terrain.terrainData.size.z;
-        float z = Random.Range(minZ, minZ + maxZ);
-
-        Vector3 position = new Vector3(x,0,z);
+        Vector3 position = Main.GetRandomPositionInMainScene();
         humans.Add(Instantiate(Human, position, Quaternion.identity));
 
         UpdateUI();
@@ -62,16 +73,20 @@ public class Main : MonoBehaviour, Observable
 
     public void Remove()
     {
-
+        humans.RemoveAt(CurrentFollowHuman);
+        Next();
+        UpdateUI();
     }
 
     private void UpdateUI()
     {
-        PreviousButton.enabled = (humans.Count > 2);
-        NextButton.enabled = (humans.Count > 2);
+        PreviousButton.enabled = (humans.Count > 1);
+        NextButton.enabled = (humans.Count > 1);
     }
 
-    // Subject interface
+    /*
+     * Observable interface
+     */
     public void attach(Observer observer)
     {
         observers.Add(observer);

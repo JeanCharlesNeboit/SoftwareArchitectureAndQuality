@@ -18,8 +18,8 @@ public class Human : MonoBehaviour {
         }
     }
 
-    public TextMesh infoTextMesh;
-    public TextMesh typeTextMesh;
+    public TextMesh SocialTextMesh;
+    public TextMesh TypeTextMesh;
 
     private Dictionary<string, IAction> actions = new Dictionary<string, IAction>();
     private Feature feature;
@@ -69,15 +69,15 @@ public class Human : MonoBehaviour {
 
     private void UpdateInfoTextMesh()
     {
-        infoTextMesh.text = "Social: " + Social.ToString("F1");
+        SocialTextMesh.text = "Social: " + Social.ToString("F1");
 
         if (Social <= feature.SocialTrigger)
         {
-            infoTextMesh.color = Color.red;
+            SocialTextMesh.color = Color.red;
         }
         else
         {
-            infoTextMesh.color = Color.green;
+            SocialTextMesh.color = Color.green;
         }
     }
 
@@ -103,9 +103,10 @@ public class Human : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        locomotionSMB = animator.GetBehaviour<LocomotionSMB>();
-        actions.Add("Walk", new Walk(locomotionSMB));
-        typeTextMesh.text = feature.Type;
+        /*locomotionSMB = animator.GetBehaviour<LocomotionSMB>();
+        /actions.Add("Walk", new Walk(locomotionSMB));*/
+        actions.Add("Run", new Run(gameObject));
+        TypeTextMesh.text = feature.Type;
         actions.Add("Speak", new Speak());
 	}
 	
@@ -114,7 +115,6 @@ public class Human : MonoBehaviour {
         if (Time.time > nextUpdate)
         {
             nextUpdate = Mathf.FloorToInt(Time.time) + 1;
-
             UpdateSocial();
         }
 
@@ -128,12 +128,14 @@ public class Human : MonoBehaviour {
             {
                 if (IsDoing("Speak") == false)
                 {
-                    SetAction("Walk", true);
+                    //SetAction("Walk", true);
+                    SetAction("Run", true);
                 }
             }
             else
             {
-                SetAction("Walk", false);
+                //SetAction("Walk", false);
+                SetAction("Run", false);
             }
         }
     }
@@ -145,7 +147,7 @@ public class Human : MonoBehaviour {
         {
             if (feature.NeedSpeaking(Social))
             {
-                SetAction("Walk", false);
+                //SetAction("Walk", false);
                 SetAction("Speak", true);
             }
         }
