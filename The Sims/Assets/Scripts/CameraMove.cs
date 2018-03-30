@@ -20,8 +20,8 @@ public class CameraMove : MonoBehaviour, Observer
 
     public void Move()
     {
-        transform.Translate(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * 10);
-        transform.Rotate(new Vector3(Input.GetAxis("VerticalRight"), Input.GetAxis("HorizontalRight"), Input.GetAxis("Lean")) * 1);
+        transform.Translate(new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical")) * 1);
+        transform.Rotate(new Vector3(Input.GetAxis("VerticalRotate"), Input.GetAxis("HorizontalRotate"), 0) * 1);
 
         if (GameObjectToFollow)
         {

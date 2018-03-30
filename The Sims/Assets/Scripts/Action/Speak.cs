@@ -11,11 +11,11 @@ public class Speak : IAction
 
     public void doAction()
     {
-
+        isDoing = true;
     }
 
     public void stopAction()
     {
-
+        isDoing = false;
     }
 }

@@ -11,7 +11,7 @@ public class Human : MonoBehaviour {
         {
             return _social;
         }
-        set
+        private set
         {
             _social = value;
             UpdateInfoTextMesh();
@@ -23,19 +23,12 @@ public class Human : MonoBehaviour {
 
     private Dictionary<string, IAction> actions = new Dictionary<string, IAction>();
     private Feature feature;
-    private Animator animator;
-    private LocomotionSMB locomotionSMB;
 
     private int nextUpdate = 0;
     private int nextUpdate1 = 0;
 
     public Human() {
         _social = 100;
-    }
-
-    public LocomotionSMB GetLocomotion()
-    {
-        return locomotionSMB;
     }
 
     private void SetAction(string name, bool activate)
@@ -83,7 +76,6 @@ public class Human : MonoBehaviour {
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         int seed = Mathf.CeilToInt(Random.Range(0, 3));
         switch (seed)
         {
@@ -124,20 +116,26 @@ public class Human : MonoBehaviour {
 
             int nextAction = Random.Range(0, 5);
 
-            if (nextAction < 3)
+            if (IsDoing("Speak") == false)
             {
-                if (IsDoing("Speak") == false)
+                if (nextAction < 3)
                 {
+
                     //SetAction("Walk", true);
                     SetAction("Run", true);
                 }
-            }
-            else
-            {
-                //SetAction("Walk", false);
-                SetAction("Run", false);
+                else
+                {
+                    //SetAction("Walk", false);
+                    SetAction("Run", false);
+                }
             }
         }
+    }
+
+    void OnTriggerStay(Collider other)
+    {
+        Debug.Log(other);
     }
 
     void OnTriggerEnter(Collider other)
@@ -145,11 +143,11 @@ public class Human : MonoBehaviour {
         Debug.Log(other);
         if (other.tag == "Player")
         {
-            if (feature.NeedSpeaking(Social))
-            {
-                //SetAction("Walk", false);
+            /*if (feature.NeedSpeaking(Social))
+            {*/
+                SetAction("Run", false);
                 SetAction("Speak", true);
-            }
+            //}
         }
     }
 }

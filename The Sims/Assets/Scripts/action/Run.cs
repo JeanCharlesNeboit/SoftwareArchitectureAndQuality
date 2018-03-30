@@ -6,7 +6,6 @@ using UnityEngine.AI;
 
 public class Run : IAction
 {
-    RaycastHit hitInfo = new RaycastHit();
     private NavMeshAgent agent;
 
     public Run(GameObject gameObject) {
@@ -18,12 +17,15 @@ public class Run : IAction
 
     public void doAction()
     {
-        Vector3 position = Main.GetRandomPositionInMainScene();
+        isDoing = true;
+        //Vector3 position = Main.GetRandomPositionInMainScene();
+        Vector3 position = Main.GetRandomPositionInNavMesh(agent);
         agent.destination = position;
     }
 
     public void stopAction()
     {
+        isDoing = false;
         agent.destination = agent.transform.position;
     }
 }
