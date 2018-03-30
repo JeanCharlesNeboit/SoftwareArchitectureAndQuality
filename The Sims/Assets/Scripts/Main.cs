@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 using UnityEngine.Experimental;
 using UnityEngine.UI;
 
@@ -24,7 +25,7 @@ public class Main : MonoBehaviour, Observable
         CameraMove cameraMove = (CameraMove)GetComponent("CameraMove");
         attach(cameraMove);
         UpdateUI();
-	}
+    }
 	
 	// Update is called once per frame
 	void Update ()
@@ -50,17 +51,29 @@ public class Main : MonoBehaviour, Observable
         return position;
     }
 
+    public static Vector3 GetRandomPositionInNavMesh(NavMeshAgent agent)
+    {
+        Vector3 randomDirection = Random.insideUnitSphere * 100;
+        randomDirection += agent.transform.position;
+        NavMeshHit hit;
+        NavMesh.SamplePosition(randomDirection, out hit, 100, 1);
+        Vector3 finalPosition = hit.position;
+        return finalPosition;
+    }
+
     /* 
      * User Interface
      */
     public void Previous()
     {
-        CurrentFollowHuman = (CurrentFollowHuman > 0) ? CurrentFollowHuman-- : humans.Count - 1;
+        CurrentFollowHuman = (CurrentFollowHuman > 0) ? CurrentFollowHuman - 1 : humans.Count - 1;
+        notify();
     }
 
     public void Next()
     {
-        CurrentFollowHuman = (CurrentFollowHuman < humans.Count - 1) ? CurrentFollowHuman++ : 0;
+        CurrentFollowHuman = (CurrentFollowHuman < humans.Count - 1) ? CurrentFollowHuman + 1 : 0;
+        notify();
     }
 
     public void Add()
@@ -73,6 +86,7 @@ public class Main : MonoBehaviour, Observable
 
     public void Remove()
     {
+        GameObject.Destroy(humans[CurrentFollowHuman]);
         humans.RemoveAt(CurrentFollowHuman);
         Next();
         UpdateUI();
@@ -80,8 +94,8 @@ public class Main : MonoBehaviour, Observable
 
     private void UpdateUI()
     {
-        PreviousButton.enabled = (humans.Count > 1);
-        NextButton.enabled = (humans.Count > 1);
+        PreviousButton.interactable = (humans.Count > 1);
+        NextButton.interactable = (humans.Count > 1);
     }
 
     /*
