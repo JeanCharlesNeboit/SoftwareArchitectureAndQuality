@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Human : MonoBehaviour {
+public class Human : MonoBehaviour, Sociable {
 
     private float _social;
     public float Social
@@ -11,7 +11,7 @@ public class Human : MonoBehaviour {
         {
             return _social;
         }
-        private set
+        set
         {
             _social = value;
             UpdateInfoTextMesh();
@@ -22,15 +22,18 @@ public class Human : MonoBehaviour {
     public TextMesh TypeTextMesh;
 
     private Dictionary<string, IAction> actions = new Dictionary<string, IAction>();
-    private Feature feature;
+    public Feature Feature { get; private set; }
 
-    private int nextUpdate = 0;
-    private int nextUpdate1 = 0;
+    private int nextUpdateSocial = 0;
+    private int nextUpdateMove = 0;
 
     public Human() {
         _social = 100;
     }
 
+    /*
+     * Action
+     */
     private void SetAction(string name, bool activate)
     {
         IAction action;
@@ -45,18 +48,21 @@ public class Human : MonoBehaviour {
         }
     }
 
-    private bool IsDoing(string name)
+    public bool IsDoing(string name)
     {
         IAction action;
         actions.TryGetValue(name, out action);
-        return action.isDoing;
+        return (action != null) ? action.isDoing : false;
     }
 
     private void UpdateSocial()
     {
-        if (Social > feature.SocialStep)
+        if (IsDoing("Speak") == false && Social > Feature.SocialStep)
         {
-            Social -= feature.SocialStep;
+            Social -= Feature.SocialStep;
+        }
+        else {
+            SetAction("Speak", true);
         }
     }
 
@@ -64,7 +70,7 @@ public class Human : MonoBehaviour {
     {
         SocialTextMesh.text = "Social: " + Social.ToString("F1");
 
-        if (Social <= feature.SocialTrigger)
+        if (NeedSpeaking())
         {
             SocialTextMesh.color = Color.red;
         }
@@ -74,45 +80,51 @@ public class Human : MonoBehaviour {
         }
     }
 
+    public bool NeedSpeaking()
+    {
+        return Feature.NeedSpeaking(Social);
+    }
+
+    /*
+     * GameObject
+     */
     private void Awake()
     {
         int seed = Mathf.CeilToInt(Random.Range(0, 3));
         switch (seed)
         {
             case 0:
-                feature = CharismaticFactory.GetInstance().GetCharismaticFeature();
+                Feature = CharismaticFactory.GetInstance().GetCharismaticFeature();
                 break;
             case 1:
-                feature = FriendlyFactory.GetInstance().GetFriendlyFeature();
+                Feature = FriendlyFactory.GetInstance().GetFriendlyFeature();
                 break;
             case 2:
-                feature = ShyFactory.GetInstance().GetShyFeature();
+                Feature = ShyFactory.GetInstance().GetShyFeature();
                 break;
             default:
                 break;
         }
     }
 
-    // Use this for initialization
     void Start () {
         /*locomotionSMB = animator.GetBehaviour<LocomotionSMB>();
-        /actions.Add("Walk", new Walk(locomotionSMB));*/
+        actions.Add("Walk", new Walk(locomotionSMB));*/
         actions.Add("Run", new Run(gameObject));
-        TypeTextMesh.text = feature.Type;
-        actions.Add("Speak", new Speak());
+        TypeTextMesh.text = Feature.Type;
+        actions.Add("Speak", new Speak(this));
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
-        if (Time.time > nextUpdate)
+        if (Time.time > nextUpdateSocial)
         {
-            nextUpdate = Mathf.FloorToInt(Time.time) + 1;
+            nextUpdateSocial = Mathf.FloorToInt(Time.time) + 1;
             UpdateSocial();
         }
 
-        if (Time.time > nextUpdate1)
+        if (Time.time > nextUpdateMove)
         {
-            nextUpdate1 = Mathf.FloorToInt(Time.time) + 10;
+            nextUpdateMove = Mathf.FloorToInt(Time.time) + 10;
 
             int nextAction = Random.Range(0, 5);
 
@@ -133,21 +145,16 @@ public class Human : MonoBehaviour {
         }
     }
 
-    void OnTriggerStay(Collider other)
-    {
-        Debug.Log(other);
-    }
-
     void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other);
         if (other.tag == "Player")
         {
-            /*if (feature.NeedSpeaking(Social))
-            {*/
+            Human otherHuman = other.GetComponent<Human>();
+            if (NeedSpeaking() || otherHuman.NeedSpeaking())
+            {
                 SetAction("Run", false);
                 SetAction("Speak", true);
-            //}
+            }
         }
     }
 }
