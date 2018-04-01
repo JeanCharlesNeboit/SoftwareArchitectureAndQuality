@@ -9,19 +9,19 @@ using UnityEngine.UI;
 public class Main : MonoBehaviour, Observable
 {
     public GameObject Human;
-    public int CurrentFollowHuman { get; private set; }
-
+    public Text Information;
     public Button PreviousButton;
     public Button NextButton;
 
     private CameraMove cameraMove;
+    private int CurrentFollowHuman { get; set; }
     private List<GameObject> humans = new List<GameObject>();
     private List<Observer> observers = new List<Observer>();
 
 	// Use this for initialization
 	void Start ()
     {
-        CurrentFollowHuman = 0;
+        CurrentFollowHuman = -1;
         CameraMove cameraMove = (CameraMove)GetComponent("CameraMove");
         attach(cameraMove);
         UpdateUI();
@@ -30,7 +30,43 @@ public class Main : MonoBehaviour, Observable
 	// Update is called once per frame
 	void Update ()
     {
-        
+        if (CurrentFollowHuman != -1)
+        {
+            Human human = humans[CurrentFollowHuman].GetComponent<Human>();
+            
+            Information.text = "Type : " + human.Feature;
+            string color = (human.Social > human.Feature.SocialTrigger) ? "green" : "red";
+            Information.text += ", Social : " + "<color=" + color + ">" + human.Social.ToString("F1") + "</color>";
+            Information.text += ", SocialTrigger : " + human.Feature.SocialTrigger.ToString("F1");
+
+            if (human.IsDoing("Speak"))
+            {
+                Information.text += ", <color=blue>is speaking</color>";
+            }
+        }
+    }
+
+    public GameObject GetCurrentHuman()
+    {
+        return humans[CurrentFollowHuman];
+    } 
+
+    public GameObject GetClosestHuman(Vector3 position)
+    {
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+
+        foreach(GameObject go in humans)
+        {
+            Vector3 diff = go.transform.position - position;
+            float curDistance = diff.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = go;
+            }
+        }
+
+        return closest;
     }
 
     /*
@@ -80,8 +116,12 @@ public class Main : MonoBehaviour, Observable
     {
         Vector3 position = Main.GetRandomPositionInMainScene();
         humans.Add(Instantiate(Human, position, Quaternion.identity));
-
         UpdateUI();
+        if (CurrentFollowHuman == -1)
+        {
+            CurrentFollowHuman = 0;
+            notify();
+        }
     }
 
     public void Remove()

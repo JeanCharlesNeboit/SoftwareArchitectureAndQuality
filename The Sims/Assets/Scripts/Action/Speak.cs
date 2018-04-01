@@ -3,7 +3,10 @@ using System.Collections;
 
 public class Speak : IAction
 {
-    public Speak() {
+    private Sociable sociable;
+
+    public Speak(Sociable sociable) {
+        this.sociable = sociable;
         isDoing = false;
     }
 
@@ -12,6 +15,13 @@ public class Speak : IAction
     public void doAction()
     {
         isDoing = true;
+
+        sociable.Social += sociable.Feature.SocialStep;
+        if (sociable.Social >= 100)
+        {
+            sociable.Social = 100;
+            isDoing = false;
+        }
     }
 
     public void stopAction()
